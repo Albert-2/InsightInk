@@ -23,13 +23,16 @@ const SignIn = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch(`${process.env.API_DOMAIN}/auth/signin`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(credential),
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_API_DOMAIN}/auth/signin`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credential),
+      }
+    );
     const json = await response.json();
     if (json.result === "Successfull") {
       localStorage.setItem("token", json.authToken);

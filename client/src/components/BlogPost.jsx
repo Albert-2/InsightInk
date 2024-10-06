@@ -24,7 +24,7 @@ const BlogPost = () => {
     const method = isLiked ? "DELETE" : "POST";
     try {
       const response = await fetch(
-        `${process.env.API_DOMAIN}/like/${endpoint}`,
+        `${import.meta.env.VITE_API_DOMAIN}/like/${endpoint}`,
         {
           method,
           headers: {
@@ -55,7 +55,7 @@ const BlogPost = () => {
     const method = isMarked ? "DELETE" : "POST";
     try {
       const response = await fetch(
-        `${process.env.API_DOMAIN}/save/${endpoint}`,
+        `${import.meta.env.VITE_API_DOMAIN}/save/${endpoint}`,
         {
           method,
           headers: {
