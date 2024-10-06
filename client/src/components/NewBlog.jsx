@@ -41,7 +41,7 @@ const NewBlog = () => {
     };
 
     try {
-      const response = await fetch(`${process.env.API_DOMIAN}/post/blogpost`, {
+      const response = await fetch(`${process.env.API_DOMAIN}/post/blogpost`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

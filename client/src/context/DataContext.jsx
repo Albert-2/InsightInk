@@ -9,7 +9,7 @@ export const DataProvider = ({ children }) => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `${process.env.API_DOMIAN}/post/getblogpost`,
+          `${process.env.API_DOMAIN}/post/getblogpost`,
           {
             method: "GET",
             headers: {
