@@ -16,6 +16,10 @@ app.get("/", (req, res) => {
   res.send("hello world");
 });
 
+app.listen(5000, () => {
+  console.log(`Example app listening on port ${5000}`);
+});
+
 app.use("/auth", signInRoute);
 app.use("/post", postRoute);
 app.use("/save", savedBlog);
