@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { body, validationResult } from "express-validator";
 
-const JWT_SECRET = process.env.JWT_SEC;
+const JWT_SECRET = process.env.JWT_SEC || "thisiskey";
 
 router.post(
   "/signin",
