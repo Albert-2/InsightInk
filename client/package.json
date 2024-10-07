@@ -9,7 +9,7 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "both": "concurrently \"npm run dev\" \"nodemon ../index.js\""
+    "both": "concurrently \"npm run dev\" \"nodemon ../server/api/index.js\""
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",

@@ -149,7 +149,7 @@ const HomePosts = () => {
           </div>
           <div className="sm:w-2/3 w-full grid lg:grid-cols-2 grid-cols-1 grid-rows-2 gap-4 border-none">
             {blogPosts
-              .filter((post) => post.tags.includes("First"))
+              .filter((post) => post.tags.includes("Travel"))
               .slice(-4)
               .map((post, index) => {
                 const formattedDate = new Date(post.date).toLocaleDateString(
