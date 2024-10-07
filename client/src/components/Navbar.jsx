@@ -60,7 +60,7 @@ const Navbar = () => {
         <Link to="/">
           <img src={Image} className="h-10" alt="Logo" />
         </Link>
-        <h1 className="font-bold text-lg">BlogWebb</h1>
+        <h1 className="font-bold text-lg">InsightInk</h1>
       </div>
       <div className="md:w-1/3 w-1/2 flex items-center justify-end">
         <div className="sm:flex hidden border-none rounded-full w-fit items-center justify-between gap-4 font-semibold px-4 py-2 md:mx-auto">
