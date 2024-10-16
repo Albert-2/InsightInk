@@ -1,49 +1,30 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "../assets/Carousalimages/logo.png";
-import { FB, IG, TW, User, open, close } from "../assets/icons";
+import { FB, IG, TW, User } from "../assets/icons";
 import { Link } from "react-router-dom";
+import { Navbar, Nav, NavDropdown, Container, Button } from "react-bootstrap";
 
-const Navbar = () => {
+const CustomNavbar = () => {
   const [subMenu, setSubMenu] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navBtnGrp = [
-    {
-      title: "Home",
-      nav: "/",
-    },
-    {
-      title: "About",
-      nav: "/about",
-    },
+    { title: "Home", nav: "/" },
+    { title: "About", nav: "/about" },
   ];
-  const socialBtn = [
-    {
-      icon: FB,
-    },
-    {
-      icon: IG,
-    },
-    {
-      icon: TW,
-    },
-  ];
+  const socialBtn = [FB, IG, TW];
   const [menu, setMenu] = useState(false);
-  const [dimensions, setDimensions] = useState({
-    width: window.innerWidth,
-  });
+  const [dimensions, setDimensions] = useState({ width: window.innerWidth });
 
   const handleResize = () => {
-    setDimensions({
-      width: window.innerWidth,
-    });
+    setDimensions({ width: window.innerWidth });
   };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
-    window.addEventListener("resize", handleResize, false);
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener("resize", handleResize, false);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -55,90 +36,40 @@ const Navbar = () => {
   };
 
   return (
-    <div className="z-50 bg-white shadow-md flex items-center justify-between border-b-2 border-gray-200 py-2 px-4 sticky top-0">
-      <div className="md:w-1/3 w-1/2 flex items-center justify-start">
-        <Link to="/">
-          <img src={Image} className="h-10" alt="Logo" />
+    <Navbar bg="light" expand="lg" className="sticky-top shadow-sm">
+      <Container>
+        <Link to="/" className="flex items-center">
+          <img src={Image} className="h-10 me-2" alt="Logo" />
+          <span className="font-bold">InsightInk</span>
         </Link>
-        <h1 className="font-bold text-lg">InsightInk</h1>
-      </div>
-      <div className="md:w-1/3 w-1/2 flex items-center justify-end">
-        <div className="sm:flex hidden border-none rounded-full w-fit items-center justify-between gap-4 font-semibold px-4 py-2 md:mx-auto">
-          {navBtnGrp.map((btn, index) => (
-            <button key={index}>
-              <Link to={btn.nav}>{btn.title}</Link>
-            </button>
-          ))}
-          {!isLoggedIn && (
-            <button>
-              <Link to={"/login"}>Login</Link>
-            </button>
-          )}
-        </div>
-        {dimensions.width <= 768 && (
-          <button className="sm:hidden block" onClick={() => setMenu(!menu)}>
-            {menu ? (
-              <img src={close} alt="closeIcon" />
-            ) : (
-              <img src={open} alt="openIcon" />
+        <Navbar.Toggle
+          aria-controls="basic-navbar-nav"
+          onClick={() => setMenu(!menu)}
+        />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="m-auto font-semibold lg:text-xl lg:border-2 lg:border-black lg:rounded-3xl lg:px-4">
+            {navBtnGrp.map((btn, index) => (
+              <Nav.Link as={Link} to={btn.nav} key={index}>
+                {btn.title}
+              </Nav.Link>
+            ))}
+            {!isLoggedIn && (
+              <Nav.Link className="mb-2" as={Link} to="/login">
+                Login
+              </Nav.Link>
             )}
-          </button>
-        )}
-      </div>
-      <div className="md:w-1/3 md:flex hidden items-center justify-end">
-        <div className="flex items-center justify-between gap-3 px-4 py-2 w-fit">
-          {socialBtn.map((icon, index) => (
-            <img
-              src={icon.icon}
-              className="hover:scale-125 transition-all cursor-pointer"
-              key={index}
-              alt={`Social icon ${index}`}
-            />
-          ))}
-          {isLoggedIn && (
-            <div className="relative">
-              <img
-                src={User}
-                className="cursor-pointer"
-                onClick={() => setSubMenu(!subMenu)}
-                alt="User"
-              />
-              {subMenu && (
-                <div className="absolute top-10 -left-8 w-24 bg-white shadow-lg border border-gray-200 z-50 rounded-lg">
-                  <ul>
-                    <li className="hover:bg-gray-100 p-2">
-                      <button onClick={handleLogout}>Logout</button>
-                    </li>
-                    <Link to={"/newPost"}>
-                      <li className="hover:bg-gray-100 p-2">
-                        <button>New Blog</button>
-                      </li>
-                    </Link>
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-      {menu && dimensions.width <= 639 && (
-        <div className="z-50 bg-white absolute w-full -bottom-40 py-4 px-2 font-semibold text-lg right-0 flex items-start justify-center flex-col gap-3">
-          {navBtnGrp.map((btn, index) => (
-            <button key={index}>
-              <Link to={btn.nav}>{btn.title}</Link>
-            </button>
-          ))}
-          <div className="flex items-center justify-between gap-3 w-fit">
+          </Nav>
+          <div className="flex space-x-4 items-center">
             {socialBtn.map((icon, index) => (
               <img
-                src={icon.icon}
-                className="hover:scale-125 transition-all cursor-pointer"
+                src={icon}
+                className="cursor-pointer hover:scale-125 transition-all"
                 key={index}
                 alt={`Social icon ${index}`}
               />
             ))}
             {isLoggedIn && (
-              <div className="relative">
+              <div className="relative h-10">
                 <img
                   src={User}
                   className="cursor-pointer"
@@ -146,26 +77,30 @@ const Navbar = () => {
                   alt="User"
                 />
                 {subMenu && (
-                  <div className="absolute -bottom-8 left-14 w-28 z-50 bg-white shadow-lg border border-gray-200 rounded-lg">
-                    <ul>
-                      <li className="hover:bg-gray-100 p-2">
-                        <button onClick={handleLogout}>Logout</button>
-                      </li>
-                      <Link to={"/newPost"}>
-                        <li className="hover:bg-gray-100 p-2">
-                          <button>New Blog</button>
-                        </li>
-                      </Link>
-                    </ul>
-                  </div>
+                  <NavDropdown
+                    align="end"
+                    className="mt-3"
+                    show={subMenu}
+                    onMouseLeave={() => setSubMenu(false)}
+                  >
+                    <NavDropdown.Item as={Link} to="/newPost">
+                      New Blog
+                    </NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/profile">
+                      My Account
+                    </NavDropdown.Item>
+                    <NavDropdown.Item onClick={handleLogout}>
+                      Logout
+                    </NavDropdown.Item>
+                  </NavDropdown>
                 )}
               </div>
             )}
           </div>
-        </div>
-      )}
-    </div>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 };
 
-export default Navbar;
+export default CustomNavbar;
