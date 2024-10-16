@@ -9,7 +9,7 @@ const Blog = (props) => {
   });
   return (
     <Link
-      to={`/blogpost/${props.blog.title}`}
+      to={`/blogpost/${encodeURIComponent(props.blog.title)}`}
       className="w-full bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105  border-black max-h-fit"
     >
       <div className="flex flex-col md:flex-row  border-black h-full">

@@ -1,9 +1,14 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 function mongoDb() {
   mongoose.connect(
-    `mongodb+srv://bhushanharvard50:MongoDB'24@clusterzero.3yk3x.mongodb.net/myBlogDB`
+    `mongodb+srv://${process.env.MONGO_USER}:${encodeURIComponent(
+      process.env.MONGO_PASS
+    )}@clusterzero.3yk3x.mongodb.net/${process.env.MONGO_DB}`
   );
-  console.log("connected to mongo");
 }
 
 export default mongoDb;
