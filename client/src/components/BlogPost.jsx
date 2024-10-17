@@ -269,7 +269,9 @@ const BlogPost = () => {
                     {relatedPosts.map((relatedPost) => (
                       <Link
                         key={relatedPost._id}
-                        to={`/blogpost/${relatedPost.title}`}
+                        to={`/blogpost/${encodeURIComponent(
+                          relatedPost.title
+                        )}`}
                       >
                         <div className="border rounded-lg p-4">
                           <h4 className="font-semibold text-lg">

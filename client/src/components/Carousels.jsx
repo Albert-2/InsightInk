@@ -23,7 +23,7 @@ const Carousels = () => {
                 style={{ backgroundImage: `url(${blog.image})` }}
                 key={index}
               >
-                <Link to={`/blogpost/${blog.title}`}>
+                <Link to={`/blogpost/${encodeURIComponent(blog.title)}`}>
                   <Carousel.Caption className="space-y-3 absolute top-1/3 z-40">
                     <h3 className="font-bold sm:text-5xl text-3xl">
                       {blog.title}

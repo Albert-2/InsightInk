@@ -53,7 +53,7 @@ const LogIn = () => {
         })
       );
       navigate("/");
-      window.location.reload();
+      // window.location.reload();
     } else {
       console.log("warning...!!");
     }

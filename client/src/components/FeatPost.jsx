@@ -36,7 +36,7 @@ const FeatPost = () => {
           return (
             <div className="flex-1 min-w-[250px]">
               <Link
-                to={`/blogpost/${post.title}`}
+                to={`/blogpost/${encodeURIComponent(post.title)}`}
                 key={index}
                 className="h-[410px] block transition-transform transform hover:scale-105 border-none"
               >

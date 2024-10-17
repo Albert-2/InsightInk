@@ -12,6 +12,7 @@ import Footer from "./components/Footer.jsx";
 import { Provider } from "react-redux";
 import store, { persistor } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
+import UserProfile from "./components/UserProfile.jsx";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
                   <Route path="/signin" element={<SignIn />} />
                   <Route path="/login" element={<LogIn />} />
                   <Route path="/newPost" element={<NewBlog />} />
+                  <Route path="/profile" element={<UserProfile />} />
                   <Route path="/blogPost/:title" element={<BlogPost />} />
                   <Route path="/tags/:tag" element={<TaggedBlog />} />
                   <Route path="*" element={<Error />} />

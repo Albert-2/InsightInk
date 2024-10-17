@@ -33,7 +33,7 @@ const HomePosts = () => {
 
                 return (
                   <Link
-                    to={`/blogpost/${post.title}`}
+                    to={`/blogpost/${encodeURIComponent(post.title)}`}
                     key={index}
                     className="block"
                   >
@@ -96,7 +96,7 @@ const HomePosts = () => {
 
                 return (
                   <Link
-                    to={`/blogpost/${post.title}`}
+                    to={`/blogpost/${encodeURIComponent(post.title)}`}
                     key={index}
                     className="block"
                   >
@@ -159,7 +159,7 @@ const HomePosts = () => {
 
                 return (
                   <Link
-                    to={`/blogpost/${post.title}`}
+                    to={`/blogpost/${encodeURIComponent(post.title)}`}
                     key={index}
                     className="block"
                   >
