@@ -14,7 +14,17 @@ const SignIn = () => {
     userName: "",
     email: "",
     password: "",
+    bio: "",
+    profilePicture: "",
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/");
+    }
+  }, [navigate]);
+
   const handleChage = (e) => {
     setCredentials({
       ...credential,
@@ -41,10 +51,11 @@ const SignIn = () => {
           userName: json.userName,
           userID: json.userID,
           token: json.authToken,
+          bio: "",
+          profilePicture: "",
         })
       );
-      // navigate("/");
-      // window.location.reload();
+      navigate("/");
     } else {
       console.log("warning...!!");
     }

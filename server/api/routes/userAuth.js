@@ -33,6 +33,8 @@ router.post(
         userName: req.body.userName,
         email: req.body.email,
         password: hashedPassword,
+        bio: req.body.bio,
+        profilePicture: req.body.profilePicture,
       });
 
       const data = {
@@ -85,12 +87,16 @@ router.post(
       const userID = user._id.toString();
       const userBlogs = user.savedPosts;
       const userName = user.userName;
+      const bio = user.bio;
+      const profilePicture = user.profilePicture;
       res.status(200).json({
         result: "Successfull",
         authToken,
         userID,
         userBlogs,
         userName,
+        bio,
+        profilePicture,
       });
     } catch (error) {
       console.error(error.message);

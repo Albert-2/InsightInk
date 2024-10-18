@@ -25,6 +25,16 @@ const UserSchema = new mongoose.Schema({
       ref: "Post",
     },
   ],
+  bio: {
+    type: String,
+    default:
+      "Be curious. Read widely. Try new things. What people call intelligence just boils down to curiosity. -Aaron Swartz",
+  },
+  profilePicture: {
+    type: String,
+    default:
+      "https://i.pinimg.com/280x280_RS/79/dd/11/79dd11a9452a92a1accceec38a45e16a.jpg", // Optional default profile picture
+  },
 });
 
 const User = mongoose.model("User", UserSchema);

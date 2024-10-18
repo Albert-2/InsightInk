@@ -1,14 +1,22 @@
 import React, { useState } from "react";
-import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faSave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
 
-const ProfileHeader = ({ user1, onImageUpload, onInputChange }) => {
+const ProfileHeader = ({
+  user1,
+  onImageUpload,
+  onInputChange,
+  onProfileUpdate,
+}) => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingBio, setIsEditingBio] = useState(false);
 
   const handleEditToggleName = () => {
     setIsEditingName(!isEditingName);
+  };
+
+  const handleEditToggleBio = () => {
+    setIsEditingBio(!isEditingBio);
   };
 
   return (
@@ -23,7 +31,7 @@ const ProfileHeader = ({ user1, onImageUpload, onInputChange }) => {
           type="file"
           accept=".jpg,.jpeg,.png"
           onChange={onImageUpload}
-          className="cursor-pointer text-center "
+          className="cursor-pointer text-center"
         />
       </div>
       <div className="w-full">
@@ -32,7 +40,10 @@ const ProfileHeader = ({ user1, onImageUpload, onInputChange }) => {
             Username{" "}
             {isEditingName ? (
               <FontAwesomeIcon
-                onClick={handleEditToggleName}
+                onClick={() => {
+                  handleEditToggleName();
+                  onProfileUpdate(); // Call the profile update function on save
+                }}
                 icon={faSave}
                 className="cursor-pointer ml-2"
               />
@@ -61,13 +72,16 @@ const ProfileHeader = ({ user1, onImageUpload, onInputChange }) => {
             Bio{" "}
             {isEditingBio ? (
               <FontAwesomeIcon
-                onClick={handleEditToggleName}
+                onClick={() => {
+                  handleEditToggleBio();
+                  onProfileUpdate(); // Call the profile update function on save
+                }}
                 icon={faSave}
                 className="cursor-pointer ml-2"
               />
             ) : (
               <FontAwesomeIcon
-                onClick={handleEditToggleName}
+                onClick={handleEditToggleBio}
                 icon={faEdit}
                 className="cursor-pointer ml-2"
               />
