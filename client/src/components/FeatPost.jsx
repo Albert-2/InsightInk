@@ -1,18 +1,21 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { DataContext } from "../context/DataContext.jsx";
+import { getAllPosts } from "../redux/blogSlice.js";
 
 const FeatPost = () => {
-  const { data } = useContext(DataContext);
-  const blogPosts = data;
-  const [isLiked, setIsLiked] = useState(false);
-  const [isMarked, setIsMarked] = useState(false);
-  const handleToggleMark = () => {
-    setIsMarked((prev) => !prev);
-  };
-  const handleToggleLike = () => {
-    setIsLiked((prev) => !prev);
-  };
+  const data = useSelector(getAllPosts);
+  const blogPosts = data || [];
+  // const [isLiked, setIsLiked] = useState(false);
+  // const [isMarked, setIsMarked] = useState(false);
+
+  // const handleToggleMark = () => {
+  //   setIsMarked((prev) => !prev);
+  // };
+
+  // const handleToggleLike = () => {
+  //   setIsLiked((prev) => !prev);
+  // };
 
   return (
     <div className="container px-4 mx-auto my-20 border-none">
@@ -34,10 +37,9 @@ const FeatPost = () => {
           );
 
           return (
-            <div className="flex-1 min-w-[250px]">
+            <div className="flex-1 min-w-[250px]" key={index}>
               <Link
                 to={`/blogpost/${encodeURIComponent(post.title)}`}
-                key={index}
                 className="h-[410px] block transition-transform transform hover:scale-105 border-none"
               >
                 <div className="bg-white shadow-lg overflow-hidden h-full">

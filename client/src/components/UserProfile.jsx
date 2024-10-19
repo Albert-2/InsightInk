@@ -2,14 +2,14 @@ import React, { useState, useEffect, useContext } from "react";
 import ProfileHeader from "./ProfileHeader";
 import UserPosts from "./UserPosts";
 import BookmarkedPosts from "./BookmarkedPosts";
-import { DataContext } from "../context/DataContext.jsx";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUser } from "../redux/userSlice";
+import { getAllPosts } from "../redux/blogSlice.js";
 
 const UserProfile = () => {
   const defaultProfilePicture =
     "https://i.pinimg.com/280x280_RS/79/dd/11/79dd11a9452a92a1accceec38a45e16a.jpg";
-  const { data } = useContext(DataContext);
+  const data = useSelector(getAllPosts);
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const userBlogs = user.userBlogs;
@@ -21,24 +21,31 @@ const UserProfile = () => {
   );
 
   const [user1, setUser1] = useState({
-    name: user.userName || "Default User",
+    name: user.userName || "",
     bio: user.bio || "",
     profilePicture: user.profilePicture || defaultProfilePicture,
     contributedPosts: userBlogsAsAuthor,
     bookmarkedPosts: filteredBlogs,
   });
 
+  const [newProfilePicture, setNewProfilePicture] = useState(null);
+
   useEffect(() => {
     const storedImage = localStorage.getItem("profilePicture");
     if (storedImage) {
       setUser1((prevUser) => ({ ...prevUser, profilePicture: storedImage }));
+    } else {
+      setUser1((prevUser) => ({
+        ...prevUser,
+        profilePicture: defaultProfilePicture,
+      }));
     }
   }, []);
 
   useEffect(() => {
     setUser1((prevUser) => ({
       ...prevUser,
-      name: user.userName || "Default User",
+      name: user.userName || "",
       bio: user.bio || "",
       profilePicture: user.profilePicture || defaultProfilePicture,
     }));
@@ -51,7 +58,8 @@ const UserProfile = () => {
       reader.onloadend = () => {
         const imageUrl = reader.result;
         setUser1((prevUser) => ({ ...prevUser, profilePicture: imageUrl }));
-        localStorage.setItem("profilePicture", imageUrl);
+        setNewProfilePicture(imageUrl);
+        localStorage.setItem("profilePicture", imageUrl); // Update local storage immediately
       };
       reader.readAsDataURL(file);
     }
@@ -67,7 +75,7 @@ const UserProfile = () => {
       userId: user.userID,
       userName: user1.name,
       bio: user1.bio,
-      profilePicture: user1.profilePicture,
+      profilePicture: newProfilePicture || user1.profilePicture,
     };
     try {
       const response = await fetch(
@@ -86,7 +94,6 @@ const UserProfile = () => {
       }
 
       const updatedUser = await response.json();
-      console.log(updateUser, " updateUser at 86 ");
       dispatch(
         updateUser({
           userName: updatedUser.userName,
@@ -94,7 +101,10 @@ const UserProfile = () => {
           profilePicture: updatedUser.profilePicture,
         })
       );
-      console.log(user, " user at 95 ");
+
+      // Ensure the local storage is updated after a successful API call
+      localStorage.setItem("profilePicture", updatedUser.profilePicture);
+      setNewProfilePicture(null);
     } catch (error) {
       console.error("Error updating profile:", error);
     }
@@ -102,7 +112,6 @@ const UserProfile = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 selection:text-white selection:bg-green-600 flex flex-col space-y-8">
-      {console.log("Current User Data:", user || "User data not available")}
       <ProfileHeader
         user1={user1}
         onImageUpload={handleImageUpload}

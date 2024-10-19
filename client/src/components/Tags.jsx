@@ -1,9 +1,10 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { DataContext } from "../context/DataContext.jsx";
+import { useSelector } from "react-redux";
+import { getTaggedBlog } from "../redux/blogSlice.js";
 
 const Tags = () => {
-  const { data, taggedBlog } = useContext(DataContext);
+  const tags = useSelector(getTaggedBlog);
   return (
     <div className="py-4 container flex items-start justify-start flex-col gap-4">
       <div className="w-full text-center space-y-2">
@@ -16,7 +17,7 @@ const Tags = () => {
       </div>
       <h1 className="sm:text-4xl text-2xl font-bold"></h1>
       <div className="flex items-start justify-start flex-wrap gap-6 border-none">
-        {taggedBlog.map((item, itemIndex) => (
+        {tags.map((item, itemIndex) => (
           <Link
             to={`/tags/${item.tag}`}
             key={itemIndex}

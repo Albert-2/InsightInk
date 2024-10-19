@@ -19,6 +19,11 @@ const ProfileHeader = ({
     setIsEditingBio(!isEditingBio);
   };
 
+  const handleImageUpload = (event) => {
+    onImageUpload(event);
+    onProfileUpdate();
+  };
+
   return (
     <div className="flex md:flex-row flex-col space-y-3 items-stretch ">
       <div className="flex-1 flex flex-col justify-around items-center space-y-3 w-full ">
@@ -30,7 +35,7 @@ const ProfileHeader = ({
         <input
           type="file"
           accept=".jpg,.jpeg,.png"
-          onChange={onImageUpload}
+          onChange={handleImageUpload} // Use the new handler
           className="cursor-pointer text-center"
         />
       </div>

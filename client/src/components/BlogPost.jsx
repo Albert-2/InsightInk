@@ -1,16 +1,14 @@
-import React, { useEffect, useState, useContext, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { DataContext } from "../context/DataContext";
 import DOMPurify from "dompurify";
-import "quill/dist/quill.snow.css";
 import { useDispatch, useSelector } from "react-redux";
 import { updateSavedPosts } from "../redux/userSlice";
+import { getAllPosts } from "../redux/blogSlice.js";
 
 const BlogPost = () => {
   const navigate = useNavigate();
   const { title } = useParams();
   const [blogPost, setBlogPost] = useState(null);
-  const { data } = useContext(DataContext);
   const contentRef = useRef(null);
   const [toc, setToc] = useState([]);
   const [relatedPosts, setRelatedPosts] = useState([]);
@@ -18,6 +16,7 @@ const BlogPost = () => {
   const [isMarked, setIsMarked] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  const data = useSelector(getAllPosts);
   const handleToggleLike = async () => {
     const newIsLiked = !isLiked;
     const endpoint = isLiked ? "dislikePost" : "likePost";
@@ -38,7 +37,7 @@ const BlogPost = () => {
       );
 
       if (response.ok) {
-        console.log(`blog ${isLiked ? "disliked" : "liked"} successfully `);
+        console.log(`blog ${isLiked ? "disliked" : "liked"} successfully`);
         setIsLiked(newIsLiked);
       } else {
         const errorText = await response.text();
@@ -72,7 +71,7 @@ const BlogPost = () => {
         const updatedSavedPosts = isMarked
           ? user.userBlogs.filter((postId) => postId !== blogPost._id)
           : [...user.userBlogs, blogPost._id];
-        console.log(`blog ${isMarked ? "unsaved" : "saved"} successfully `);
+        console.log(`blog ${isMarked ? "unsaved" : "saved"} successfully`);
         dispatch(updateSavedPosts(updatedSavedPosts));
         setIsMarked(newIsMarked);
       } else {
@@ -147,7 +146,7 @@ const BlogPost = () => {
   return (
     <>
       <div className="flex items-start justify-center container ">
-        <div className="flex flex-col  items-center justify-center gap-2 w-fit m-2">
+        <div className="flex flex-col items-center justify-center gap-2 w-fit m-2">
           <div onClick={handleToggleLike} className="hover:cursor-pointer">
             {isLiked ? (
               <svg
@@ -226,7 +225,7 @@ const BlogPost = () => {
           {blogPost ? (
             <>
               <div
-                className=" h-80 overflow-hidden flex items-center justify-center"
+                className="h-80 overflow-hidden flex items-center justify-center"
                 style={{
                   backgroundImage: `url(${blogPost.image})`,
                   backgroundSize: "cover",
@@ -237,8 +236,8 @@ const BlogPost = () => {
                   {blogPost.title}
                 </h2>
               </div>
-              <div className=" flex items-start justify-center relative">
-                <div className=" w-1/4 sticky top-16 sm:block hidden p-2">
+              <div className="flex items-start justify-center relative">
+                <div className="w-1/4 sticky top-16 sm:block hidden p-2">
                   <h6>Table Of Content</h6>
                   <ul className="list-decimal list-inside space-y-2 py-3">
                     {toc.map((item) => (
@@ -256,8 +255,8 @@ const BlogPost = () => {
                     ))}
                   </ul>
                 </div>
-                <div className="sm:w-3/4 w-full  flex items-center justify-center flex-col">
-                  <div className=" w-full h-2/3 px-2 text-justify">
+                <div className="sm:w-3/4 w-full flex items-center justify-center flex-col">
+                  <div className="w-full h-2/3 px-2 text-justify">
                     <p ref={contentRef}></p>
                   </div>
                 </div>

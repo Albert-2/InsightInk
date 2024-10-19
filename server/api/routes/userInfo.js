@@ -19,14 +19,14 @@ router.post("/update", async (req, res) => {
     bio: bio || user.bio, // Keep existing bio if not provided
     profilePicture: profilePicture || user.profilePicture, // Use new image or keep existing
   };
-
+  console.log(updatedFields, " updated fields ");
   try {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       updatedFields,
       { new: true } // Return the updated document
     );
-    console.log(updatedUser, " updatedUser at userinfo ");
+    console.log(updatedUser, " updatedUser at update ");
     res.status(200).json(updatedUser);
   } catch (error) {
     console.error(error);

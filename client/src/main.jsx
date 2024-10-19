@@ -2,12 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-import { DataProvider } from "./context/DataContext.jsx";
+import { Provider } from "react-redux";
+import store, { persistor } from "./redux/store"; // Adjust the path if needed
+import { PersistGate } from "redux-persist/integration/react"; // Import PersistGate
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <DataProvider>
-      <App />
-    </DataProvider>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
+    </Provider>
   </React.StrictMode>
 );

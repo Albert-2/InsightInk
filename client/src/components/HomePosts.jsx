@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { DataContext } from "../context/DataContext.jsx";
+import { useSelector } from "react-redux";
+import { getAllPosts } from "../redux/blogSlice.js";
 
 const HomePosts = () => {
-  const { data } = useContext(DataContext);
-  const blogPosts = data;
+  const data = useSelector(getAllPosts);
   return (
     <>
       <div className="flex flex-col space-y-24 mt-20 w-[95%] mx-auto">
@@ -18,7 +18,7 @@ const HomePosts = () => {
             </p>
           </div>
           <div className="sm:w-2/3 w-full grid lg:grid-cols-2 grid-cols-1 grid-rows-2 gap-4 border-none">
-            {blogPosts
+            {data
               .filter((post) => post.tags.includes("Health & Wellness"))
               .slice(-4)
               .map((post, index) => {
@@ -81,7 +81,7 @@ const HomePosts = () => {
             </p>
           </div>
           <div className="sm:w-2/3 w-full grid lg:grid-cols-2 grid-cols-1 grid-rows-2 gap-4 border-none">
-            {blogPosts
+            {data
               .filter((post) => post.tags.includes("Technology"))
               .slice(-4)
               .map((post, index) => {
@@ -144,7 +144,7 @@ const HomePosts = () => {
             </p>
           </div>
           <div className="sm:w-2/3 w-full grid lg:grid-cols-2 grid-cols-1 grid-rows-2 gap-4 border-none">
-            {blogPosts
+            {data
               .filter((post) => post.tags.includes("Travel"))
               .slice(-4)
               .map((post, index) => {

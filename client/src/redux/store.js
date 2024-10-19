@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "./userSlice";
+import userReducer from "./userSlice.js";
+import blogReducer from "./blogSlice.js";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
@@ -8,11 +9,13 @@ const persistConfig = {
   storage,
 };
 
-const persistedReducer = persistReducer(persistConfig, userReducer);
+const persistedUserReducer = persistReducer(persistConfig, userReducer);
+const persistedBlogReducer = persistReducer(persistConfig, blogReducer); // Persist the blog reducer
 
 const store = configureStore({
   reducer: {
-    user: persistedReducer,
+    user: persistedUserReducer,
+    blog: persistedBlogReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

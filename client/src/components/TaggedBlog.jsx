@@ -1,14 +1,14 @@
 import React, { useContext, useEffect } from "react";
 import Blog from "./Blog";
 import { useParams } from "react-router-dom";
-import { DataContext } from "../context/DataContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { getAllPosts } from "../redux/blogSlice.js";
 
 const TaggedBlog = () => {
   const navigate = useNavigate();
   const params = useParams();
-  const { data } = useContext(DataContext);
+  const data = useSelector(getAllPosts);
   const blogs = data.filter((blog) => blog.tags.includes(params.tag));
   useEffect(() => {
     if (blogs.length === 0) {
