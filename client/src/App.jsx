@@ -19,7 +19,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchBlogData()); 
+    dispatch(fetchBlogData());
   }, [dispatch]);
 
   return (
@@ -33,7 +33,7 @@ function App() {
               <Route path="/signin" element={<SignIn />} />
               <Route path="/login" element={<LogIn />} />
               <Route path="/newPost" element={<NewBlog />} />
-              <Route path="/profile" element={<UserProfile />} />
+              <Route path="/profile/:userName" element={<UserProfile />} />
               <Route path="/blogPost/:title" element={<BlogPost />} />
               <Route path="/tags/:tag" element={<TaggedBlog />} />
               <Route path="*" element={<Error />} />

@@ -93,7 +93,10 @@ const CustomNavbar = () => {
                     <NavDropdown.Item as={Link} to="/newPost">
                       New Blog
                     </NavDropdown.Item>
-                    <NavDropdown.Item as={Link} to="/profile">
+                    <NavDropdown.Item
+                      as={Link}
+                      to={`/profile/${user.userName}`}
+                    >
                       My Account
                     </NavDropdown.Item>
                     <NavDropdown.Item onClick={handleLogout}>
