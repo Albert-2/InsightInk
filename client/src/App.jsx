@@ -12,8 +12,8 @@ import TaggedBlog from "./components/TaggedBlog.jsx";
 import Footer from "./components/Footer.jsx";
 import UserProfile from "./components/UserProfile.jsx";
 import { useDispatch } from "react-redux";
-import { fetchBlogData, getAllPosts } from "./redux/blogSlice.js";
-import { useSelector } from "react-redux";
+import { fetchBlogData } from "./redux/blogSlice.js";
+import About from "./components/About.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -37,6 +37,7 @@ function App() {
               <Route path="/blogPost/:title" element={<BlogPost />} />
               <Route path="/tags/:tag" element={<TaggedBlog />} />
               <Route path="*" element={<Error />} />
+              <Route path="/about" element={<About />} />
             </Routes>
           </main>
           <Footer />
