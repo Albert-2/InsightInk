@@ -32,12 +32,19 @@ const blogSlice = createSlice({
       state.loading = false;
       state.error = action.payload || "Failed to fetch blog data";
     },
+    deletePostSuccess(state, action) {
+      state.posts = state.posts.filter((post) => post._id !== action.payload);
+    },
   },
 });
 
 // Action creators
-export const { fetchBlogStart, fetchBlogSuccess, fetchBlogError } =
-  blogSlice.actions;
+export const {
+  fetchBlogStart,
+  fetchBlogSuccess,
+  fetchBlogError,
+  deletePostSuccess,
+} = blogSlice.actions;
 
 // Thunk for fetching blog data
 export const fetchBlogData = () => (dispatch) => {
@@ -60,6 +67,25 @@ export const fetchBlogData = () => (dispatch) => {
     })
     .catch((error) => {
       dispatch(fetchBlogError(error.message));
+    });
+};
+
+// Thunk for deleting a post
+export const deletePostData = (postId) => (dispatch) => {
+  fetch(`${import.meta.env.VITE_API_DOMAIN}/post/delete/${postId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to delete post");
+      }
+      dispatch(deletePostSuccess(postId));
+    })
+    .catch((error) => {
+      console.error("Error deleting post:", error);
     });
 };
 
