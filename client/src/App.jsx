@@ -24,7 +24,7 @@ function App() {
 
   return (
     <>
-      <div className="bg-[#f5f5f5] selection:bg-green-500 selection:text-white">
+      <div className="bg-[#f5f5f5] selection:bg-green-500 selection:text-white min-h-screen">
         <Router>
           <Navbar />
           <main>

@@ -17,18 +17,14 @@ const TaggedBlog = () => {
   }, [blogs, navigate]);
   const userBlogs = useSelector((state) => state.user.userBlogs) || [];
   return (
-    <div className="container mx-auto p-6 rounded-lg m-2 min-h-[83vh]">
-      {blogs.length > 0 ? (
+    <div className="container mx-auto p-6 rounded-lg min-h-[83vh]">
+      {blogs.length > 0 && (
         <div className="grid lg:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-6">
           {blogs.map((blog, index) => {
             const isSaved = userBlogs.includes(blog._id);
             return <Blog blog={blog} key={index} isSaved={isSaved} />;
           })}
         </div>
-      ) : (
-        <p className="text-center text-gray-500">
-          No blogs found for this tag.
-        </p>
       )}
     </div>
   );

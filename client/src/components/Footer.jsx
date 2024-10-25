@@ -64,7 +64,7 @@ const navigation = [
 ];
 const Footer = () => {
   return (
-    <footer className="bg-white ">
+    <footer className="bg-white bottom-0">
       <div className="container p-4 sm:p-6 md:flex md:items-center md:justify-between">
         <div className="flex justify-center sm:space-x-6 space-x-3 md:order-2 ">
           {navigation.map((item) => (

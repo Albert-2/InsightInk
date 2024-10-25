@@ -17,6 +17,7 @@ const BlogPost = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const data = useSelector(getAllPosts);
+  const [likesCount, setLikesCount] = useState(0);
   const handleToggleLike = async () => {
     const newIsLiked = !isLiked;
     const endpoint = isLiked ? "dislikePost" : "likePost";
@@ -39,6 +40,9 @@ const BlogPost = () => {
       if (response.ok) {
         console.log(`blog ${isLiked ? "disliked" : "liked"} successfully`);
         setIsLiked(newIsLiked);
+        setLikesCount((prevCount) =>
+          newIsLiked ? prevCount + 1 : prevCount - 1
+        );
       } else {
         const errorText = await response.text();
         console.error(errorText);
@@ -89,6 +93,7 @@ const BlogPost = () => {
       if (filteredPost) {
         setBlogPost(filteredPost);
         setIsLiked(filteredPost.likedBy.includes(user.userID));
+        setLikesCount(filteredPost.likedBy.length);
       } else {
         navigate("/");
       }
@@ -136,17 +141,10 @@ const BlogPost = () => {
     }
   }, [blogPost, data]);
 
-  const scrollToHeading = (id) => {
-    const headingElement = document.getElementById(id);
-    if (headingElement) {
-      headingElement.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <>
       <div className="flex items-start justify-center container ">
-        <div className="flex flex-col items-center justify-center gap-2 w-fit m-2">
+        <div className="flex flex-col items-center justify-center gap-2 w-fit mx-2 my-6">
           <div onClick={handleToggleLike} className="hover:cursor-pointer">
             {isLiked ? (
               <svg
@@ -182,6 +180,7 @@ const BlogPost = () => {
                 />
               </svg>
             )}
+            <p className="text-center">{likesCount > 0 && likesCount}</p>
           </div>
           <div onClick={handleToggleSave} className="hover:cursor-pointer">
             {isMarked ? (
@@ -225,7 +224,7 @@ const BlogPost = () => {
           {blogPost ? (
             <>
               <div
-                className="h-80 overflow-hidden flex items-center justify-center"
+                className="h-80 overflow-hidden flex items-center justify-center "
                 style={{
                   backgroundImage: `url(${blogPost.image})`,
                   backgroundSize: "cover",
@@ -245,12 +244,7 @@ const BlogPost = () => {
                         key={item.id}
                         className={`ml-${item.level - 1} font-bold`}
                       >
-                        <a
-                          href={`#${item.id}`}
-                          onClick={() => scrollToHeading(item.id)}
-                        >
-                          {item.text}
-                        </a>
+                        {item.text}
                       </li>
                     ))}
                   </ul>
