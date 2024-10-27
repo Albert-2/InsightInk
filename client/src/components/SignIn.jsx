@@ -73,7 +73,7 @@ const SignIn = () => {
 
   return (
     <div className="h-[85vh] flex items-center">
-      <div className="bg-white border-2 border-gray-200 sm:min-w-[50%] md:min-w-[25%] min-w-full mx-auto rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700 inset-0 m-auto max-h-fit">
+      <div className="bg-white border-2 border-gray-200 sm:w-96 w-[80%] mx-auto rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700 inset-0 m-auto max-h-fit">
         <div className="p-4 sm:p-7">
           <div className="text-center">
             <h1 className="block text-2xl font-bold text-gray-800 dark:text-black">

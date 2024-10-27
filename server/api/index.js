@@ -6,6 +6,7 @@ import postRoute from "./routes/userPost.js";
 import savedBlog from "./routes/userSaveBlog.js";
 import likedBlog from "./routes/userLikedBlog.js";
 import updateUser from "./routes/userInfo.js";
+import resetPass from "./routes/passReset.js";
 
 mongoDb();
 
@@ -26,6 +27,7 @@ app.use("/post", postRoute);
 app.use("/save", savedBlog);
 app.use("/like", likedBlog);
 app.use("/user", updateUser);
+app.use("/reset", resetPass);
 
 export default (req, res) => {
   app(req, res);

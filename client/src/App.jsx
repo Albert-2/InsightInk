@@ -14,6 +14,7 @@ import UserProfile from "./components/UserProfile.jsx";
 import { useDispatch } from "react-redux";
 import { fetchBlogData } from "./redux/blogSlice.js";
 import About from "./components/About.jsx";
+import NewPass from "./components/NewPass.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ function App() {
               <Route path="/" element={<Hero />} />
               <Route path="/signin" element={<SignIn />} />
               <Route path="/login" element={<LogIn />} />
+              <Route path="/forgetPass/:token/:id" element={<NewPass />} />
               <Route path="/newPost" element={<NewBlog />} />
               <Route path="/profile/:userName" element={<UserProfile />} />
               <Route path="/blogPost/:title" element={<BlogPost />} />
