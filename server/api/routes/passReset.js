@@ -6,7 +6,7 @@ import nodemailer from "nodemailer";
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SEC || "thisiskey";
-
+const FRONTEND_URL = process.env.FRONTEND_URL;
 // Set up Nodemailer transport
 const transporter = nodemailer.createTransport({
   service: "gmail", // You can use any email service
@@ -30,7 +30,7 @@ router.post("/reset-password", async (req, res) => {
   const token = jwt.sign({ id: user._id }, secret, { expiresIn: "10m" });
   const id = user._id;
   // Construct the reset link
-  const resetLink = `http://localhost:5173/forgetPass/${token}/${id}`;
+  const resetLink = `${FRONTEND_URL}/forgetPass/${token}/${id}`;
 
   // Send email with the reset link
   const mailOptions = {
