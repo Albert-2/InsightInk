@@ -1,88 +1,101 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/userSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const LogIn = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const API_DOMAIN = import.meta.env.VITE_API_DOMAIN;
 
-  useEffect(() => {
-    if (localStorage.getItem("token")) navigate("/");
-  }, []);
   const [credential, setCredentials] = useState({
     userName: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(""); // State to hold error messages
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/");
-    }
+    if (localStorage.getItem("token")) navigate("/");
   }, [navigate]);
 
-  const handleChage = (e) => {
+  const handleChange = (e) => {
     setCredentials({
       ...credential,
       [e.target.name]: e.target.value,
     });
+    setError(""); // Clear any previous error when changing input
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch(
-      `${import.meta.env.VITE_API_DOMAIN}/auth/login`,
-      {
+    if (!credential.userName || !credential.password) {
+      setError("Both fields are required."); // Set error message if fields are empty
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_DOMAIN}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(credential),
+      });
+      const json = await response.json();
+
+      if (json.result === "Successfull") {
+        localStorage.setItem("token", json.authToken);
+        dispatch(
+          setUser({
+            userName: json.userName,
+            userID: json.userID,
+            userBlogs: json.userBlogs,
+            token: json.authToken,
+            bio: json.bio,
+            profilePicture: json.profilePicture,
+          })
+        );
+        navigate("/");
+      } else {
+        setError("Login failed. Please check your credentials."); // Set error message on failure
       }
-    );
-    const json = await response.json();
-    if (json.result === "Successfull") {
-      localStorage.setItem("token", json.authToken);
-      dispatch(
-        setUser({
-          userName: json.userName,
-          userID: json.userID,
-          userBlogs: json.userBlogs,
-          token: json.authToken,
-          bio: json.bio,
-          profilePicture: json.profilePicture,
-        })
-      );
-      navigate("/");
-    } else {
-      console.log("warning...!!");
+    } catch (error) {
+      console.error("An error occurred:", error);
+      setError("An error occurred. Please try again."); // Set error message on catch
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
   };
 
   return (
     <div className="h-[85vh] flex items-center">
-      <div className="bg-white border-2 border-gray-200 sm:min-w-[50%] md:min-w-[25%]  min-w-full mx-auto rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700 inset-0 m-auto">
+      <div className="bg-white sm:min-w-[50%] md:min-w-[25%] min-w-[90%] mx-auto rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
         <div className="p-4 sm:p-7">
           <div className="text-center">
-            <h1 className="block text-2xl font-bold text-gray-800 dark:text-white">
-              Log in
-            </h1>
+            <h1 className="block text-2xl font-bold text-gray-800">Log in</h1>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               Don't have an account yet?
               <Link
                 to="/signin"
-                className="text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                className="text-blue-600 decoration-2 hover:underline font-medium"
               >
                 Sign up here
               </Link>
             </p>
           </div>
-
+          {error && (
+            <p className="text-red-500 text-sm text-center mt-2">{error}</p>
+          )}{" "}
+          {/* Display error message */}
           <div className="mt-5">
             <button
               type="button"
-              className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800"
             >
               <svg
                 className="w-4 h-auto"
@@ -120,33 +133,31 @@ const LogIn = () => {
                 <div>
                   <label
                     htmlFor="text"
-                    className="block  text-sm  mb-2 dark:text-white font-bold"
+                    className="block text-sm mb-2 dark:text-white font-bold"
                   >
                     Username or Email:
                   </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      id="text"
-                      name="userName"
-                      className="py-3 px-4 block w-full border-2 border-gray-200 rounded-lg  text-sm  focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600 "
-                      required
-                      value={credential.userName}
-                      onChange={handleChage}
-                    />
-                  </div>
+                  <input
+                    type="text"
+                    id="text"
+                    name="userName"
+                    className="py-3 px-4 block w-full border-2 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"
+                    required
+                    value={credential.userName}
+                    onChange={handleChange}
+                  />
                 </div>
 
                 <div>
                   <div className="flex justify-between items-center">
                     <label
                       htmlFor="hs-toggle-password"
-                      className="block  text-sm  mb-2 dark:text-white font-bold"
+                      className="block text-sm mb-2 dark:text-white font-bold"
                     >
                       Password
                     </label>
                     <a
-                      className=" text-sm  text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                      className="text-sm text-blue-600 decoration-2 hover:underline font-medium"
                       href="#"
                     >
                       Forgot password?
@@ -155,67 +166,29 @@ const LogIn = () => {
                   <div className="relative">
                     <input
                       id="hs-toggle-password"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       name="password"
                       value={credential.password}
-                      onChange={handleChage}
-                      className="py-3 px-4 block w-full border-2 border-gray-200 rounded-lg  text-sm  focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+                      onChange={handleChange}
+                      className="py-3 px-4 block w-full border-2 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"
                       required
                     />
                     <button
                       type="button"
-                      data-hs-toggle-password='{
-                "target": "#hs-toggle-password"
-              }'
-                      className="absolute top-0 end-0 p-3.5 rounded-e-md dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                      onClick={togglePasswordVisibility}
+                      className="absolute inset-y-0 right-3 flex items-center"
                     >
-                      <svg
-                        className="flex-shrink-0 size-3.5 text-gray-400 dark:text-gray-600"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          className="hs-password-active:hidden"
-                          d="M9.88 9.88a3 3 0 1 0 4.24 4.24"
-                        />
-                        <path
-                          className="hs-password-active:hidden"
-                          d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
-                        />
-                        <path
-                          className="hs-password-active:hidden"
-                          d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"
-                        />
-                        <line
-                          className="hs-password-active:hidden"
-                          x1="2"
-                          x2="22"
-                          y1="2"
-                          y2="22"
-                        />
-                        <path
-                          className="hidden hs-password-active:block"
-                          d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
-                        />
-                        <circle
-                          className="hidden hs-password-active:block"
-                          cx="12"
-                          cy="12"
-                          r="3"
-                        />
-                      </svg>
+                      <FontAwesomeIcon
+                        icon={showPassword ? faEyeSlash : faEye}
+                        className="w-5 h-5 text-gray-400 dark:text-gray-600"
+                      />
                     </button>
                   </div>
                 </div>
+
                 <button
                   type="submit"
-                  className="py-3 px-4 inline-flex justify-center items-center gap-x-2  text-sm  font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                  className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700"
                 >
                   Log in
                 </button>

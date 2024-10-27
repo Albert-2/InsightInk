@@ -2,22 +2,22 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/userSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const SignIn = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (localStorage.getItem("token")) navigate("/");
-  }, []);
+  const API_DOMAIN = import.meta.env.VITE_API_DOMAIN; // Store API_DOMAIN for reuse
   const [credential, setCredentials] = useState({
     userName: "",
     email: "",
     password: "",
-    bio: "",
-    profilePicture: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
 
+  // Consolidated effect to check for token and navigate
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -25,41 +25,52 @@ const SignIn = () => {
     }
   }, [navigate]);
 
-  const handleChage = (e) => {
+  const handleChange = (e) => {
     setCredentials({
       ...credential,
       [e.target.name]: e.target.value,
     });
+    setError(""); // Clear error on change
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch(
-      `${import.meta.env.VITE_API_DOMAIN}/auth/signin`,
-      {
+    try {
+      const response = await fetch(`${API_DOMAIN}/auth/signin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(credential),
+      });
+
+      const json = await response.json();
+
+      if (json.result === "Successfull") {
+        localStorage.setItem("token", json.authToken);
+        dispatch(
+          setUser({
+            userName: json.userName,
+            userID: json.userID,
+            token: json.authToken,
+            bio: "",
+            profilePicture: "",
+          })
+        );
+        navigate("/");
+      } else {
+        setError("Login failed. Please check your credentials."); // User feedback
       }
-    );
-    const json = await response.json();
-    if (json.result === "Successfull") {
-      localStorage.setItem("token", json.authToken);
-      dispatch(
-        setUser({
-          userName: json.userName,
-          userID: json.userID,
-          token: json.authToken,
-          bio: "",
-          profilePicture: "",
-        })
-      );
-      navigate("/");
-    } else {
-      console.log("warning...!!");
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("An error occurred. Please try again."); // User feedback
     }
   };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
+  };
+
   return (
     <div className="h-[85vh] flex items-center">
       <div className="bg-white border-2 border-gray-200 sm:min-w-[50%] md:min-w-[25%] min-w-full mx-auto rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700 inset-0 m-auto max-h-fit">
@@ -110,7 +121,7 @@ const SignIn = () => {
                 <div>
                   <label
                     htmlFor="email"
-                    className="block  text-sm  mb-2 dark:text-white font-bold"
+                    className="block text-sm mb-2 dark:text-white font-bold"
                   >
                     Email address
                   </label>
@@ -119,12 +130,10 @@ const SignIn = () => {
                       type="email"
                       id="email"
                       name="email"
-                      className="py-3 px-4 block w-full border-2 border-gray-200 rounded-lg  text-sm  focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600 "
-                      placeholder="email@example.com"
+                      className="py-3 px-4 block w-full border-2 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
                       required
-                      aria-describedby="email-error"
                       value={credential.email}
-                      onChange={handleChage}
+                      onChange={handleChange}
                     />
                     <div className="hidden absolute inset-y-5 end-0 pointer-events-none pe-3">
                       <svg
@@ -139,29 +148,25 @@ const SignIn = () => {
                       </svg>
                     </div>
                   </div>
-                  <p
-                    className="hidden text-xs text-red-600 mt-2"
-                    id="email-error"
-                  >
-                    Please include a valid email address so we can get back to
-                    you
-                  </p>
+                  {error && (
+                    <p className="text-xs text-red-600 mt-2">{error}</p>
+                  )}
                 </div>
                 <div>
                   <label
                     htmlFor="username"
-                    className="block  text-sm  mb-2 dark:text-white font-bold"
+                    className="block text-sm mb-2 dark:text-white font-bold"
                   >
-                    UserID
+                    Username
                   </label>
                   <div className="relative">
                     <input
                       type="text"
-                      id="text"
+                      id="username"
                       name="userName"
-                      className="py-3 px-4 block w-full border-2 border-gray-200 rounded-lg  text-sm  focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600 "
+                      className="py-3 px-4 block w-full border-2 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
                       value={credential.userName}
-                      onChange={handleChage}
+                      onChange={handleChange}
                       required
                     />
                   </div>
@@ -171,7 +176,7 @@ const SignIn = () => {
                   <div className="flex justify-between items-center">
                     <label
                       htmlFor="hs-toggle-password"
-                      className="block  text-sm  mb-2 dark:text-white font-bold"
+                      className="block text-sm mb-2 dark:text-white font-bold"
                     >
                       Password
                     </label>
@@ -179,74 +184,35 @@ const SignIn = () => {
                   <div className="relative">
                     <input
                       id="hs-toggle-password"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       name="password"
-                      className="py-3 px-4 block w-full border-2 border-gray-200 rounded-lg  text-sm  focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+                      className="py-3 px-4 block w-full border-2 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
                       value={credential.password}
-                      onChange={handleChage}
+                      onChange={handleChange}
                       minLength={8}
                     />
                     <button
                       type="button"
-                      data-hs-toggle-password='{
-                "target": "#hs-toggle-password"
-              }'
-                      className="absolute top-0 end-0 p-3.5 rounded-e-md dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                      onClick={togglePasswordVisibility}
+                      className="absolute inset-y-0 right-3 flex items-center"
                     >
-                      <svg
-                        className="flex-shrink-0 size-3.5 text-gray-400 dark:text-neutral-600"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          className="hs-password-active:hidden"
-                          d="M9.88 9.88a3 3 0 1 0 4.24 4.24"
-                        />
-                        <path
-                          className="hs-password-active:hidden"
-                          d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
-                        />
-                        <path
-                          className="hs-password-active:hidden"
-                          d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"
-                        />
-                        <line
-                          className="hs-password-active:hidden"
-                          x1="2"
-                          x2="22"
-                          y1="2"
-                          y2="22"
-                        />
-                        <path
-                          className="hidden hs-password-active:block"
-                          d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
-                        />
-                        <circle
-                          className="hidden hs-password-active:block"
-                          cx="12"
-                          cy="12"
-                          r="3"
-                        />
-                      </svg>
+                      <FontAwesomeIcon
+                        icon={showPassword ? faEyeSlash : faEye}
+                        className="w-5 h-5 text-gray-400 dark:text-gray-600"
+                      />
                     </button>
                   </div>
                   <p
                     className="hidden text-xs text-red-600 mt-2"
                     id="password-error"
                   >
-                    8+ characters with atleast one symbol and one number
+                    8+ characters with at least one symbol and one number
                     required
                   </p>
                 </div>
                 <button
                   type="submit"
-                  className="py-3 px-4 inline-flex justify-center items-center gap-x-2  text-sm  font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                  className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                 >
                   Sign in
                 </button>
