@@ -30,7 +30,9 @@ router.post("/reset-password", async (req, res) => {
   const token = jwt.sign({ id: user._id }, secret, { expiresIn: "10m" });
   const id = user._id;
   // Construct the reset link
-  const resetLink = `${FRONTEND_URL}/forgetPass/${token}/${id}`;
+  const resetLink = `${encodeURIComponent(
+    FRONTEND_URL
+  )}/forgetPass/${encodeURIComponent(token)}/${encodeURIComponent(id)}`;
 
   // Send email with the reset link
   const mailOptions = {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "../assets/Carousalimages/logo.png";
 import { FB, IG, TW, User } from "../assets/icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Navbar, Nav, NavDropdown, Container, Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
@@ -9,7 +9,7 @@ const CustomNavbar = () => {
   const [subMenu, setSubMenu] = useState(false);
   const user = useSelector((state) => state.user);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     setIsLoggedIn(user.userID != null);
   }, [user]);
@@ -40,6 +40,7 @@ const CustomNavbar = () => {
     setIsLoggedIn(false);
     setSubMenu(false);
     window.location.reload();
+    navigate("/");
   };
 
   return (
